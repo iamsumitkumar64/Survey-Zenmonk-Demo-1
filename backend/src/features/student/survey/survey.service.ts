@@ -9,9 +9,9 @@ export class SurveyService {
     ) { }
 
     async getStudentSurveys(user: StudentEntity, offset?: number, limit?: number) {
-        const surveys = await this.surveyRepo.getStudentSurveys(user, offset, limit);
+        const { data, total } = await this.surveyRepo.getStudentSurveys(user, offset, limit);
         return {
-            data: surveys,
+            data: data,
             message: "Fetched Surveyes"
         }
     }

@@ -20,7 +20,8 @@ export class SurveyService {
             ...body,
             creator_uuid: dept.uuid,
             start_date: new Date(body.start_date),
-            end_date: new Date(body.end_date)
+            end_date: new Date(body.end_date),
+            max_attempts: body.max_attempts
         });
 
         return {
@@ -42,9 +43,9 @@ export class SurveyService {
     }
 
     async getSurveys(offset?: number, limit?: number) {
-        const surveys = await this.surveyRepo.getSurveys(offset, limit);
+        const { data, total } = await this.surveyRepo.getSurveys(offset, limit);
         return {
-            data: surveys,
+            data: data,
             message: "Fetched Surveyes"
         }
     }

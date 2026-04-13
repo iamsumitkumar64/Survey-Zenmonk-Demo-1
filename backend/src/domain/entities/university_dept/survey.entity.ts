@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { UniversityDepartmentEntity } from "./university-dept.entity";
 import { SurveyQuestionEntity } from "./survey.question.entity";
+import { StudentResponseEntity } from "src/domain/entities/student/response.entity";
 
 @Entity('survey')
 export class SurveyEntity {
@@ -25,12 +26,18 @@ export class SurveyEntity {
     @Column({ type: 'date' })
     end_date: Date;
 
+    @Column({ type: 'int', default: 1 })
+    max_attempts: number;
+
     @ManyToOne(() => UniversityDepartmentEntity, (dept) => dept.surveys)
     @JoinColumn({ name: 'creator_uuid' })
     creator: UniversityDepartmentEntity;
 
     @OneToMany(() => SurveyQuestionEntity, (q) => q.survey, { eager: true })
     questions: SurveyQuestionEntity[];
+
+    @OneToMany(() => StudentResponseEntity, (response) => response.survey_uuid)
+    responses: StudentResponseEntity[];
 
     @CreateDateColumn()
     created_at: Date;

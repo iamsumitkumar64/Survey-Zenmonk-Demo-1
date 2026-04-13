@@ -83,6 +83,19 @@ export default function CreateSurveyModal({ open, onClose }: Props) {
                     error={!!errors.end_date}
                     helperText={errors.end_date?.message}
                 />
+
+                <TextField
+                    type="number"
+                    label="Max Attempts"
+                    fullWidth
+                    margin="normal"
+                    defaultValue={1}
+                    {...register("max_attempts", {
+                        setValueAs: value => parseInt(value as string, 10),
+                    })}
+                    error={!!errors.max_attempts}
+                    helperText={errors.max_attempts?.message}
+                />
             </DialogContent>
 
             <DialogActions>

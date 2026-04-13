@@ -9,23 +9,28 @@ import { RootState } from "@/redux/store";
 import { getStudentSurveys, submitSurveyResponse, } from "@/redux/feature/student/studentAction";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks.ts";
 import { SurveyQuestionTypeEnum } from "@/enums/survery.enum";
+import { StudentResponse, StudentSurveyQuestion, StudentSurvey } from "@/redux/feature/student/tudentType";
 
 export default function SurveyPage() {
     const { uuid } = useParams();
     const surveyId = Array.isArray(uuid) ? uuid[0] : uuid;
     const dispatch = useAppDispatch();
     const router = useRouter();
-    const { surveys, loading, submitLoading, responses } = useAppSelector((state: RootState) => state.studentReducer);
+    const { surveys, loading, submitLoading, responses } = useAppSelector(
+        (state: RootState) => state.studentReducer
+    ) as { surveys: StudentSurvey[]; loading: boolean; submitLoading: boolean; responses: StudentResponse[] };
     const { control, handleSubmit } = useForm();
 
-    const alreadySubmitted = responses?.some((r: any) => r.survey_uuid === surveyId);
     const survey = surveys.find((s) => s.uuid === surveyId);
+    const submissionCount = responses?.filter((r: StudentResponse) => r.survey_uuid === surveyId).length || 0;
+    const maxAttempts = survey?.max_attempts || 1;
+    const alreadySubmitted = submissionCount >= maxAttempts;
 
     useEffect(() => {
         dispatch(getStudentSurveys({}));
     }, [dispatch]);
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: Record<string, string | number | null>) => {
         if (!survey || alreadySubmitted) return;
 
         const payload = {
@@ -54,7 +59,7 @@ export default function SurveyPage() {
                 </Typography>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    {survey.questions.map((q: any) => (
+                    {survey.questions.map((q: StudentSurveyQuestion) => (
                         <Box key={q.uuid} className={styles.question}>
                             <Typography className={styles.label}>
                                 {q.question} {q.mandatory && "*"}
@@ -141,7 +146,7 @@ export default function SurveyPage() {
                         className={styles.button}
                         disabled={submitLoading || alreadySubmitted}
                     >
-                        {alreadySubmitted ? "Already Submitted" : submitLoading ? "Submitting..." : "Submit"}
+                        {alreadySubmitted ? "Attempt Limit Reached" : submitLoading ? "Submitting..." : `Submit (Attempt ${submissionCount + 1}/${maxAttempts})`}
                     </Button>
                 </form>
             </Paper>

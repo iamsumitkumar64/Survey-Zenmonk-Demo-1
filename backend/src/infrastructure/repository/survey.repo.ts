@@ -19,6 +19,7 @@ export class SurveyRepository extends Repository<SurveyEntity> {
             where: {
                 uuid: uuid
             },
+            relations: ['responses'],
         });
         return survey;
     }

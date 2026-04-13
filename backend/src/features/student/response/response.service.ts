@@ -19,13 +19,15 @@ export class ResponseService {
             throw new BadRequestException("Survey Not Found");
         }
 
-        const alreadySubmitted = await this.responseRepo.findByStudentAndSurvey(
-            student.uuid,
-            dto.survey_uuid
-        );
+        const previousResponses = await this.responseRepo.count({
+            where: {
+                student_uuid: student.uuid,
+                survey_uuid: dto.survey_uuid
+            }
+        });
 
-        if (alreadySubmitted) {
-            throw new BadRequestException("You already submitted this survey");
+        if (previousResponses >= survey.max_attempts) {
+            throw new BadRequestException("You have already reached the maximum attempts for this survey");
         }
 
         const response = await this.responseRepo.createResponse({

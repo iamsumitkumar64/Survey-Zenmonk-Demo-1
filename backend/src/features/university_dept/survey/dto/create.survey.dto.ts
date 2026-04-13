@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsString, IsDateString, IsNumber, Min } from 'class-validator';
 
 export class CreateSurveyDto {
     @IsString()
@@ -20,4 +20,9 @@ export class CreateSurveyDto {
     @IsDateString()
     @IsNotEmpty()
     end_date: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    @Min(1)
+    max_attempts: number;
 }

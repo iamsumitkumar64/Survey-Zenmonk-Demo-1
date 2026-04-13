@@ -3,6 +3,8 @@ export interface StudentSurveyQuestion {
     survey_uuid: string;
     question: string;
     question_type: string;
+    mandatory: boolean;
+    options?: { uuid: string; option: string; }[];
     created_at: string;
     updated_at: string;
     deleted_at: string | null;
@@ -16,6 +18,7 @@ export interface StudentSurvey {
     target_program: string;
     start_date: string;
     end_date: string;
+    max_attempts: number;
     questions: StudentSurveyQuestion[];
     created_at: string;
     updated_at: string;

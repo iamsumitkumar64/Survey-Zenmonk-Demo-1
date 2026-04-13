@@ -15,6 +15,7 @@ export interface Survey {
   target_program: string;
   start_date: string;
   end_date: string;
+  max_attempts: number;
   questions: SurveyQuestion[];
   created_at: string;
   updated_at: string;
